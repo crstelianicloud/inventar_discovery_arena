@@ -16,11 +16,11 @@ class _VeziInventarPageState extends State<VeziInventarPage> {
         .collection('inventare')
         .doc(dataZilei())
         .get();
-    if (doc.exists) {
+
+    if (doc.exists && doc.data() != null) {
       return doc.data() as Map<String, dynamic>;
-    } else {
-      return null;
     }
+    return null;
   }
 
   @override
@@ -55,9 +55,21 @@ class _VeziInventarPageState extends State<VeziInventarPage> {
             children: produse.entries.map((entry) {
               String nume = entry.key;
               var detalii = entry.value;
+
+              // Verifică și convertește cantitatea și prețul dacă sunt string-uri
+              var cantitate = detalii['cantitate'];
+              var pret = detalii['pret'];
+
+              if (cantitate is String) {
+                cantitate = int.tryParse(cantitate) ?? 0;
+              }
+              if (pret is String) {
+                pret = double.tryParse(pret) ?? 0.0;
+              }
+
               return ListTile(
                 title: Text(nume),
-                subtitle: Text('Cantitate: ${detalii['cantitate']}, Preț: ${detalii['pret']}'),
+                subtitle: Text('Cantitate: $cantitate, Preț: $pret'),
               );
             }).toList(),
           );

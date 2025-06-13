@@ -21,12 +21,15 @@ class _AdaugaInventarPageState extends State<AdaugaInventarPage> {
   Future<void> salveazaInventar() async {
     String dataZilei = getDataZilei();
 
-    // Adaugă produsul la listă
     String numeProdus = _produsController.text.trim();
-    int cantitate = int.tryParse(_cantitateController.text.trim()) ?? 0;
-    double pret = double.tryParse(_pretController.text.trim()) ?? 0.0;
+    String cantitateStr = _cantitateController.text.trim();
+    String pretStr = _pretController.text.trim();
 
-    if (numeProdus.isNotEmpty && cantitate > 0 && pret >= 0) {
+    // Conversie sigură și verificări
+    int? cantitate = int.tryParse(cantitateStr);
+    double? pret = double.tryParse(pretStr);
+
+    if (numeProdus.isNotEmpty && cantitate != null && cantitate > 0 && pret != null && pret >= 0) {
       _produse[numeProdus] = {
         'cantitate': cantitate,
         'pret': pret,
@@ -50,6 +53,7 @@ class _AdaugaInventarPageState extends State<AdaugaInventarPage> {
         );
       }
     } else {
+      // Mesaj de eroare dacă câmpurile nu sunt completate corect
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Completează toate câmpurile corect')),
       );
